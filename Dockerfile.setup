@@ -1,0 +1,18 @@
+FROM node:18-alpine
+
+# Instalar curl para health checks
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Copiar package.json e instalar dependências
+COPY package.json ./
+RUN npm install
+
+# Copiar scripts de configuração
+COPY scripts/setup-erp-mocks.js ./
+COPY scripts/start-erp-mocks.js ./
+COPY scripts/test-erp-routing.js ./
+
+# Aguardar todos os serviços ficarem saudáveis e executar setup
+CMD ["sh", "-c", "echo 'Aguardando todos os serviços ficarem saudáveis...' && sleep 30 && node setup-erp-mocks.js"]

@@ -1,0 +1,135 @@
+version: '3.8'
+
+services:
+  # API Middleware Principal
+  api-middleware:
+    build: .
+    image: ${DOCKER_USERNAME:-seu-usuario}/api-middleware:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - LOG_LEVEL=info
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - sap-erp
+      - oracle-erp
+      - dynamics-erp
+      - legacy-erp
+
+  # SAP ERP Mock
+  sap-erp:
+    build:
+      context: ./mocks
+      dockerfile: Dockerfile.sap
+    image: ${DOCKER_USERNAME:-seu-usuario}/sap-erp-mock:latest
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Oracle ERP Mock
+  oracle-erp:
+    build:
+      context: ./mocks
+      dockerfile: Dockerfile.oracle
+    image: ${DOCKER_USERNAME:-seu-usuario}/oracle-erp-mock:latest
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Microsoft Dynamics ERP Mock
+  dynamics-erp:
+    build:
+      context: ./mocks
+      dockerfile: Dockerfile.dynamics
+    image: ${DOCKER_USERNAME:-seu-usuario}/dynamics-erp-mock:latest
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Legacy ERP Mock
+  legacy-erp:
+    build:
+      context: ./mocks
+      dockerfile: Dockerfile.legacy
+    image: ${DOCKER_USERNAME:-seu-usuario}/legacy-erp-mock:latest
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Script de Configuração Automática
+  setup-erps:
+    build:
+      context: .
+      dockerfile: Dockerfile.setup
+    image: ${DOCKER_USERNAME:-seu-usuario}/erp-setup:latest
+    environment:
+      - MIDDLEWARE_URL=http://api-middleware:3000
+      - SAP_URL=http://sap-erp:3001
+      - ORACLE_URL=http://oracle-erp:3002
+      - DYNAMICS_URL=http://dynamics-erp:3003
+      - LEGACY_URL=http://legacy-erp:3004
+    depends_on:
+      api-middleware:
+        condition: service_healthy
+      sap-erp:
+        condition: service_healthy
+      oracle-erp:
+        condition: service_healthy
+      dynamics-erp:
+        condition: service_healthy
+      legacy-erp:
+        condition: service_healthy
+    restart: "no"
+    profiles:
+      - setup
+
+networks:
+  default:
+    name: erp-middleware-network

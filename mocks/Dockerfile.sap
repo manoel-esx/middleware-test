@@ -1,0 +1,23 @@
+FROM node:18-alpine
+
+# Instalar curl para health checks
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Copiar package.json e instalar dependências
+COPY package.json ./
+RUN npm install --only=production
+
+# Copiar código do servidor SAP
+COPY sap-erp-server.js ./
+
+# Expor porta
+EXPOSE 3001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
+
+# Comando para iniciar
+CMD ["node", "sap-erp-server.js"]

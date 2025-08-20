@@ -1,0 +1,62 @@
+{
+  "erp-systems": [
+    {
+      "id": "sap-erp",
+      "name": "SAP ERP System",
+      "baseUrl": "http://localhost:3001",
+      "apiKey": "sap_mock_key_123",
+      "timeout": 3000,
+      "priority": 1,
+      "description": "Sistema SAP mock para testes"
+    },
+    {
+      "id": "oracle-erp",
+      "name": "Oracle ERP System",
+      "baseUrl": "http://localhost:3002",
+      "apiKey": "oracle_mock_key_456",
+      "timeout": 4000,
+      "priority": 2,
+      "description": "Sistema Oracle mock para testes"
+    },
+    {
+      "id": "dynamics-erp",
+      "name": "Microsoft Dynamics ERP",
+      "baseUrl": "http://localhost:3003",
+      "apiKey": "dynamics_mock_key_789",
+      "timeout": 5000,
+      "priority": 3,
+      "description": "Sistema Microsoft Dynamics mock para testes"
+    },
+    {
+      "id": "legacy-erp",
+      "name": "Legacy ERP System",
+      "baseUrl": "http://localhost:3004",
+      "apiKey": "legacy_mock_key_999",
+      "timeout": 8000,
+      "priority": 4,
+      "description": "Sistema legado mock para testes de migração"
+    }
+  ],
+  "erp-mappings": [
+    {
+      "erpId": "123",
+      "systemId": "sap-erp",
+      "description": "ERP 123 mapeado para SAP"
+    },
+    {
+      "erpId": "456",
+      "systemId": "oracle-erp",
+      "description": "ERP 456 mapeado para Oracle"
+    },
+    {
+      "erpId": "789",
+      "systemId": "dynamics-erp",
+      "description": "ERP 789 mapeado para Microsoft Dynamics"
+    },
+    {
+      "erpId": "999",
+      "systemId": "legacy-erp",
+      "description": "ERP 999 mapeado para sistema legado"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "erp-mock-servers",
+  "version": "1.0.0",
+  "description": "Servidores mock para diferentes sistemas ERP para testes do middleware",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ../scripts/start-erp-mocks.js",
+    "start:sap": "node sap-erp-server.js",
+    "start:oracle": "node oracle-erp-server.js",
+    "start:dynamics": "node dynamics-erp-server.js",
+    "start:legacy": "node legacy-erp-server.js",
+    "start:all": "concurrently \"npm run start:sap\" \"npm run start:oracle\" \"npm run start:dynamics\" \"npm run start:legacy\"",
+    "setup": "node ../scripts/setup-erp-mocks.js",
+    "test": "echo \"Testando conectividade dos ERPs mock...\" && npm run test:health",
+    "test:health": "node -e \"require('http').get('http://localhost:3001/health', (res) => { console.log('SAP:', res.statusCode); }); require('http').get('http://localhost:3002/health', (res) => { console.log('Oracle:', res.statusCode); }); require('http').get('http://localhost:3003/health', (res) => { console.log('Dynamics:', res.statusCode); }); require('http').get('http://localhost:3004/health', (res) => { console.log('Legacy:', res.statusCode); }); })\""
+  },
+  "keywords": ["mock", "erp", "sap", "oracle", "dynamics", "testing", "middleware"],
+  "author": "API Middleware Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
