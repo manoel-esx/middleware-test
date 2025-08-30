@@ -5,11 +5,13 @@ const router = express.Router();
 const proxyRoutes = require('./proxy');
 const systemRoutes = require('./systems');
 const healthRoutes = require('./health');
+const loggerRoutes = require('./logger');
 
 // Aplicar rotas
 router.use('/proxy', proxyRoutes);
 router.use('/systems', systemRoutes);
 router.use('/health', healthRoutes);
+router.use('/logger', loggerRoutes);
 
 // Rota raiz da API
 router.get('/', (req, res) => {
@@ -20,6 +22,7 @@ router.get('/', (req, res) => {
       proxy: '/api/proxy - Roteamento de requisições para sistemas externos',
       systems: '/api/systems - Gerenciamento de sistemas externos',
       health: '/api/health - Status de saúde dos sistemas',
+      logger: '/api/logger - Endpoint genérico para logging de requisições',
       docs: '/api/docs - Documentação da API'
     },
     timestamp: new Date().toISOString()
